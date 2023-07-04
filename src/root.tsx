@@ -1,16 +1,21 @@
-import { component$, useStyles$ } from '@builder.io/qwik';
+import { component$, useSignal, useStyles$ } from '@builder.io/qwik';
 import { App } from './examples/app';
 
 export const Root = component$(() => {
+  const show = useSignal(true);
   useStyles$(`
-   box {
-    display: block;
-    width: 200px;
-    height: 200px;
-    margin: 20px;
-    background: blue;
-  }
+    box {
+      display: block;
+      width: 200px;
+      height: 200px;
+      margin: 20px;
+      background: blue;
+    }
+    main {
+      padding: 12px;
+    }
 `);
+
   return (
     <>
       <head>
@@ -19,7 +24,12 @@ export const Root = component$(() => {
       </head>
       <body>
         <box />
-        <App />
+        <main>
+          <button onClick$={() => (show.value = !show.value)}>
+            {show.value ? 'hidden' : 'show'}
+          </button>
+          {show.value ? <App /> : null}
+        </main>
       </body>
     </>
   );

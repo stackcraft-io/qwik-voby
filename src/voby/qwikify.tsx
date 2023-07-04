@@ -30,20 +30,20 @@ export function qwikifyQrl<PROPS extends {}>(
     const internalState = useSignal<NoSerialize<Internal<PROPS>>>();
     const [signal] = useWakeupSignal(props, opts);
     const TagName = opts?.tagName ?? ('qwik-voby' as any);
-
+    const dispose = useSignal<NoSerialize<() => void>>();
     // Task takes cares of updates and partial hydration
-    useTask$(async ({ track }) => {
+    useTask$(async ({ track, cleanup }) => {
       const trackedProps = track(() => ({ ...props }));
       track(signal);
 
       if (!isBrowser) {
         return;
       }
-
+      let disposeFn = () => {};
       // Update
       if (internalState.value) {
         if (internalState.value.root) {
-          client.render(
+          disposeFn = client.render(
             main(slotRef.value, scopeId, internalState.value.cmp, trackedProps),
             internalState.value.root
           );
@@ -53,15 +53,18 @@ export function qwikifyQrl<PROPS extends {}>(
         const hostElement = hostRef.value;
         if (hostElement) {
           if (signal.value === false) {
-            client.render(main(slotRef.value, scopeId, Cmp, trackedProps), hostElement);
+            disposeFn = client.render(main(slotRef.value, scopeId, Cmp, trackedProps), hostElement);
           }
         }
-
+        dispose.value = noSerialize(disposeFn);
         internalState.value = noSerialize({
           cmp: Cmp,
           root: hostElement,
         });
       }
+      cleanup(() => {
+        dispose.value?.();
+      });
     });
 
     return (
@@ -73,7 +76,11 @@ export function qwikifyQrl<PROPS extends {}>(
               queueMicrotask(() => {
                 const internalData = internalState.value;
                 if (internalData && !internalData.root) {
-                  client.render(main(slotRef.value, scopeId, internalData.cmp, props), el);
+                  const disposeFn = client.render(
+                    main(slotRef.value, scopeId, internalData.cmp, props),
+                    el
+                  );
+                  dispose.value = noSerialize(disposeFn);
                 }
               });
             } else {
