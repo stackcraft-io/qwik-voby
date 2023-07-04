@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "description": "QwikVoby allows adding Voby components into existing Qwik application",
   "scripts": {
-    "build": "npm run build.lib",
+    "build": "pnpm run build.lib",
     "build.client": "vite build",
     "build.lib": "vite build --mode lib",
     "build.ssr": "vite build --ssr src/entry.ssr.tsx",
@@ -14,7 +14,7 @@
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
     "release": "np",
-    "start": "npm run dev",
+    "start": "pnpm run dev",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

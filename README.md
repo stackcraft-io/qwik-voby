@@ -17,7 +17,7 @@ import { qwikify$, observable } from '@qwikdev/qwik-voby';
 // Create Voby component standard way
 function Counter() {
   const count = observable(0);
-  const incr = () => count(i => i+1)
+  const incr = () => count((i) => i + 1);
   return (
     <button className="voby" onClick={incr}>
       Count: {count}
