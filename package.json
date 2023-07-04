@@ -13,7 +13,7 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "release": "np",
+    "release": "npm publish --tag latest  --access public",
     "start": "pnpm run dev",
     "typecheck": "tsc --noEmit"
   },

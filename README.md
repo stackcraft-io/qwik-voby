@@ -76,4 +76,4 @@ Please keep in mind that this is an experimental implementation based on [`qwik-
 - [Partytown](https://partytown.builder.io/)
 - [Mitosis](https://github.com/BuilderIO/mitosis)
 - [Builder.io](https://www.builder.io/)
-- [qwik-preact]([Title]https://github.com/QwikDev/qwik-preact)
+- [qwik-preact](https://github.com/QwikDev/qwik-preact)
