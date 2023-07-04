@@ -1,6 +1,8 @@
 # qwik-voby ⚡️
 
-QwikVoby allows adding Voby components into existing Qwik application
+QwikVoby allows adding [Voby](https://github.com/vobyjs/voby) components into existing Qwik application
+
+> **NOTE**: voby is a focused on the client component, so here we ignore all SSR and hydrate related options.
 
 ## How to Integrate into a Qwik app
 
@@ -8,7 +10,11 @@ Integration is pretty much the same as <https://qwik.builder.io/docs/integration
 
 First, install `@stackcraft-io/qwik-voby` with npm, pnpm or yarn. Instead of `react` and `react-dom`, you will need to install `voby`. And don't forgot `/** @jsxImportSource voby */`
 
-counter.tsx
+```sh
+pnpm add @stackcraft-io/qwik-voby
+```
+
+create `counter.tsx`
 
 ```tsx
 /** @jsxImportSource voby */
