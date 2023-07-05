@@ -1,10 +1,5 @@
-import type { PropFunction, Signal } from '@builder.io/qwik';
-
+import type { PropFunction } from '@builder.io/qwik';
 export type FunctionComponent<PROPS extends {}> = (props: PROPS) => JSX.Child;
-export interface Internal<PROPS extends {}> {
-  root: Element | undefined;
-  cmp: FunctionComponent<PROPS>;
-}
 
 export interface QwikifyBase {
   /**

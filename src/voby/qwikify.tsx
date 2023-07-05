@@ -14,8 +14,9 @@ import {
 
 import { isBrowser } from '@builder.io/qwik/build';
 import * as client from './client';
-import { getHostProps, main, useWakeupSignal } from './slot';
-import type { FunctionComponent, Internal, QwikifyOptions, QwikifyProps } from './types';
+import { getHostProps, main } from './slot';
+
+import type { FunctionComponent, QwikifyOptions, QwikifyProps } from './types';
 
 export function qwikifyQrl<PROPS extends {}>(
   vobyCmp$: QRL<FunctionComponent<PROPS & { children?: any }>>,
@@ -27,41 +28,32 @@ export function qwikifyQrl<PROPS extends {}>(
     );
     const hostRef = useSignal<Element>();
     const slotRef = useSignal<Element>();
-    const internalState = useSignal<NoSerialize<Internal<PROPS>>>();
-    const [signal] = useWakeupSignal(props, opts);
-    const TagName = opts?.tagName ?? ('qwik-voby' as any);
+    const vobyCmp = useSignal<NoSerialize<FunctionComponent<PROPS>>>();
     const dispose = useSignal<NoSerialize<() => void>>();
+    const TagName = opts?.tagName ?? ('qwik-voby' as any);
+
     // Task takes cares of updates and partial hydration
     useTask$(async ({ track, cleanup }) => {
       const trackedProps = track(() => ({ ...props }));
-      track(signal);
 
       if (!isBrowser) {
         return;
       }
-      let disposeFn = () => {};
-      // Update
-      if (internalState.value) {
-        if (internalState.value.root) {
-          disposeFn = client.render(
-            main(slotRef.value, scopeId, internalState.value.cmp, trackedProps),
-            internalState.value.root
-          );
-        }
-      } else {
-        const Cmp = await vobyCmp$.resolve();
-        const hostElement = hostRef.value;
-        if (hostElement) {
-          if (signal.value === false) {
-            disposeFn = client.render(main(slotRef.value, scopeId, Cmp, trackedProps), hostElement);
-          }
-        }
+
+      const cmp = await vobyCmp$.resolve();
+
+      vobyCmp.value = noSerialize(cmp);
+
+      // Root props update
+      if (hostRef.value) {
+        dispose.value?.();
+        const disposeFn = client.render(
+          main(slotRef.value, scopeId, vobyCmp.value, trackedProps),
+          hostRef.value
+        );
         dispose.value = noSerialize(disposeFn);
-        internalState.value = noSerialize({
-          cmp: Cmp,
-          root: hostElement,
-        });
       }
+
       cleanup(() => {
         dispose.value?.();
       });
@@ -73,18 +65,14 @@ export function qwikifyQrl<PROPS extends {}>(
           {...getHostProps(props)}
           ref={(el: Element) => {
             if (isBrowser) {
-              queueMicrotask(() => {
-                const internalData = internalState.value;
-                if (internalData && !internalData.root) {
-                  const disposeFn = client.render(
-                    main(slotRef.value, scopeId, internalData.cmp, props),
-                    el
-                  );
-                  dispose.value = noSerialize(disposeFn);
-                }
-              });
-            } else {
               hostRef.value = el;
+              queueMicrotask(() => {
+                const disposeFn = client.render(
+                  main(slotRef.value, scopeId, vobyCmp.value, props),
+                  el
+                );
+                dispose.value = noSerialize(disposeFn);
+              });
             }
           }}
         >

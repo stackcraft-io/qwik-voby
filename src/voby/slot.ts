@@ -1,18 +1,9 @@
-import { $, useOn, useOnDocument, useSignal } from '@builder.io/qwik';
+import { $, useOnDocument, useSignal } from '@builder.io/qwik';
 import { isServer } from '@builder.io/qwik/build';
-import { createContext, createElement, useContext } from 'voby';
+import { createElement } from 'voby';
 import type { QwikifyOptions, QwikifyProps } from './types';
-
-interface SlotState {
-  el?: Element;
-  scopeId: string;
-  attachedEl?: Element;
-}
-const SlotCtx = createContext<SlotState>({ scopeId: '' });
-
 export function main(slotEl: Element | undefined, scopeId: string, RootCmp: any, props: any) {
-  const newProps = getVobyProps(props);
-  return mainExactProps(slotEl, scopeId, RootCmp, newProps);
+  return mainExactProps(slotEl, scopeId, RootCmp, getVobyProps(props));
 }
 
 export function mainExactProps(
@@ -21,35 +12,25 @@ export function mainExactProps(
   RootCmp: any,
   props: any
 ) {
-  return createElement(SlotCtx.Provider, {
-    value: {
-      el: slotEl,
+  return createElement(RootCmp, {
+    ...props,
+    children: createElement(SlotElement, {
+      slotEl,
       scopeId,
-      attachedEl: undefined,
-    },
-    children: createElement(RootCmp, {
-      ...props,
-      children: createElement(SlotElement, null),
     }),
   });
 }
-const SlotElement = () => {
-  const context = useContext(SlotCtx);
+const SlotElement = (props: { slotEl: Element | undefined; scopeId: string }) => {
+  const mount = (el: Element) => {
+    props.slotEl && el.appendChild(props.slotEl);
+  };
+
   // @ts-expect-error since q-slotc is not a standard element, we will get error
   return createElement('q-slotc', {
-    class: context.scopeId,
+    class: props.scopeId,
     suppressHydrationWarning: true,
     dangerouslySetInnerHTML: { __html: '<!--SLOT-->' },
-    ref: (slot: HTMLElement) => {
-      const { attachedEl, el } = context;
-      if (el) {
-        if (!attachedEl) {
-          slot.appendChild(el);
-        } else if (attachedEl !== slot) {
-          throw new Error('already attached');
-        }
-      }
-    },
+    ref: mount,
   });
 };
 

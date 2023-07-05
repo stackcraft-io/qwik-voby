@@ -1,19 +1,20 @@
 /** @jsxImportSource voby */
 
-import { qwikify$ } from '../voby/qwikify';
 import { observable } from '../index.qwik';
-
-export const App = qwikify$(() => {
+import { qwikify$ } from '../voby/qwikify';
+export const App = qwikify$((props: { multiple: number; children?: JSX.Child }) => {
   const count = observable(0);
-  const increment = () => count((i) => i + 1);
-  const decrement = () => count((i) => i - 1);
+  const increment = () => count((i) => props.multiple * (i + 1));
+  const decrement = () => count((i) => props.multiple * (i - 1));
 
   return (
     <>
       <div>Hello, this is simple Voby counter</div>
       <p>Count: {count}</p>
-      <button onClick={increment}>Increment</button>
       <button onClick={decrement}>Decrement</button>
+      <button onClick={increment}>Increment</button>
+
+      <footer>{props.children}</footer>
     </>
   );
 });
