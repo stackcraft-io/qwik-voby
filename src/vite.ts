@@ -1,5 +1,5 @@
 export function qwikVoby(): any {
-  const OPTIMIZE_DEPS = ['voby', 'voby/jsx-runtime'];
+  const OPTIMIZE_DEPS = ['voby', 'voby/jsx-runtime', 'voby/jsx-dev-runtime'];
   const DEDUPE = ['voby'];
 
   return {

@@ -13,7 +13,7 @@ export default defineConfig(() => {
         fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'mjs' : 'cjs'}`,
       },
       rollupOptions: {
-        external: ['voby', 'voby/jsx-runtime'],
+        external: ['voby', 'voby/jsx-runtime', 'voby/jsx-dev-runtime'],
       },
     },
     plugins: [qwikVite(), dts()],

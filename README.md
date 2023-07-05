@@ -4,6 +4,10 @@ QwikVoby allows adding [Voby](https://github.com/vobyjs/voby) components into ex
 
 > **NOTE**: voby is a focused on the client component, so here we ignore all SSR and hydrate related options.
 
+
+**WARN: qwik@1.2.4 vite plugin has bug?**
+![](assets/image.png)
+
 ## How to Integrate into a Qwik app
 
 Integration is pretty much the same as <https://qwik.builder.io/docs/integrations/react/>.
