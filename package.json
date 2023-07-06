@@ -1,6 +1,6 @@
 {
   "name": "@stackcraft.io/qwik-voby",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "QwikVoby allows adding Voby components into existing Qwik application",
   "scripts": {
     "build": "pnpm run build.lib",
@@ -13,12 +13,12 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "release": "npm publish --tag latest  --access public",
+    "release": "pnpm build; npm publish --tag latest  --access public",
     "start": "pnpm run dev",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.2.4",
+    "@builder.io/qwik": "1.2.5",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.44.0",
